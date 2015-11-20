@@ -65,13 +65,22 @@ class BasicBufferMgr {
          buff = chooseUnpinnedBuffer();
          if (buff == null)
             return null;
+         if(buff.block()!= null){
+        	 
+        	 bufferPoolMap.remove(buff.block().toString());
+         }
+         
          buff.assignToBlock(blk);
+         bufferPoolMap.put(buff.block().toString(), buff);
+         
       }
       if (!buff.isPinned())
          numAvailable--;
       buff.pin();
       return buff;
    }
+   
+   
    
    /**
     * Allocates a new block in the specified file, and
@@ -86,7 +95,14 @@ class BasicBufferMgr {
       Buffer buff = chooseUnpinnedBuffer();
       if (buff == null)
          return null;
+      if(buff.block()!= null){
+     	 
+     	 bufferPoolMap.remove(buff.block().toString());
+      }
+      
       buff.assignToNew(filename, fmtr);
+      bufferPoolMap.put(buff.block().toString(), buff);
+      
       numAvailable--;
       buff.pin();
       return buff;
@@ -110,14 +126,20 @@ class BasicBufferMgr {
       return numAvailable;
    }
    
-   private Buffer findExistingBuffer(Block blk) {
+   private Buffer findExistingBuffer(Block blk){
       //for (Buffer buff : bufferpool)
-      for(Buffer buff : bufferPoolMap.values()){   // Custom
-         Block b = buff.block();
-         if (b != null && b.equals(blk))
+      try{
+    	  
+         Buffer buff = bufferPoolMap.get(blk.toString());  // Custom
+         
             return buff;
       }
-      return null;
+      catch(Exception e){
+    	  
+    	  return null;
+    	  
+      }
+      
    }
    
    private Buffer chooseUnpinnedBuffer() {
