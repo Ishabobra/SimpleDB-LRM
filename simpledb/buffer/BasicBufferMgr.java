@@ -11,7 +11,7 @@ import java.util.Map;
  *
  */
 class BasicBufferMgr {
-   private Buffer[] bufferpool;
+   //private Buffer[] bufferpool;
    private int numAvailable;
    private Map<String,Buffer> bufferPoolMap; // Custom
    
@@ -29,7 +29,8 @@ class BasicBufferMgr {
     * @param numbuffs the number of buffer slots to allocate
     */
    BasicBufferMgr(int numbuffs) {
-	   bufferPoolMap = new HashMap();
+	   bufferPoolMap = new HashMap(); // Custom
+	   numAvailable = numbuffs; // Custom 
       /*bufferpool = new Buffer[numbuffs];
       numAvailable = numbuffs;
       for (int i=0; i<numbuffs; i++)
