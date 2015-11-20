@@ -20,7 +20,9 @@ public class Buffer {
    private int modifiedBy = -1;  // negative means not modified
    private int logSequenceNumber = -1; // negative means no corresponding log record
 
-   /**
+
+
+/**
     * Creates a new buffer, wrapping a new 
     * {@link simpledb.file.Page page}.  
     * This constructor is called exclusively by the 
@@ -36,6 +38,18 @@ public class Buffer {
     */
    public Buffer() {}
    
+   /**
+    * Returns the Log sequence number of the 
+    * buffer's page.
+    * If an integer was not stored at that location,
+    * the behavior of the method is unpredictable.
+    * @param offset the byte offset of the page
+    * @return the integer value at that offset
+    */
+   
+   public int getLogSequenceNumber() {
+	return logSequenceNumber;
+}
    /**
     * Returns the integer value at the specified offset of the
     * buffer's page.
