@@ -14,6 +14,7 @@ class BasicBufferMgr {
    //private Buffer[] bufferpool;
    private int numAvailable;
    private Map<String,Buffer> bufferPoolMap; // Custom
+   private int numAllocated;
    
    /**
     * Creates a buffer manager having the specified number 
@@ -31,6 +32,7 @@ class BasicBufferMgr {
    BasicBufferMgr(int numbuffs) {
 	   bufferPoolMap = new HashMap(); // Custom
 	   numAvailable = numbuffs; // Custom 
+	   numAllocated = numbuffs;
       /*bufferpool = new Buffer[numbuffs];
       numAvailable = numbuffs;
       for (int i=0; i<numbuffs; i++)
@@ -119,10 +121,34 @@ class BasicBufferMgr {
    }
    
    private Buffer chooseUnpinnedBuffer() {
-      //for (Buffer buff : bufferpool)
-      for(Buffer buff : bufferPoolMap.values())  // Custom
-         if (!buff.isPinned())
-         return buff;
-      return null;
-   }
+	      //for (Buffer buff : bufferpool)
+		  if(numAllocated > 0)
+		  {
+			  Buffer buff = new Buffer();
+			  numAllocated--;
+			  return buff;
+		  }
+		  else
+		  {
+			  int min = -1;
+			  Buffer lsn_buff = null;
+			  for(Buffer buff : bufferPoolMap.values())  // Custom
+			  {
+				  if(!buff.isPinned())
+				  {
+					  int lsn = buff.getLogSequenceNumber();
+					  if(min == -1 || lsn < min)
+					  {
+						  min = lsn;
+						  lsn_buff = buff;
+					  }
+				  }
+			  }
+			  
+			  return lsn_buff;
+	         //if (!buff.isPinned())
+	         //return buff;
+		  }
+	      //return null;
+	   }
 }
