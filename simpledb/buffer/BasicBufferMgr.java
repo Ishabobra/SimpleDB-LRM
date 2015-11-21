@@ -13,7 +13,7 @@ import java.util.Map;
 class BasicBufferMgr {
    //private Buffer[] bufferpool;
    private int numAvailable;
-   private Map<String,Buffer> bufferPoolMap; // Custom
+   private Map<Block,Buffer> bufferPoolMap; // Custom
    private int numAllocated;
    
    /**
@@ -30,7 +30,7 @@ class BasicBufferMgr {
     * @param numbuffs the number of buffer slots to allocate
     */
    BasicBufferMgr(int numbuffs) {
-	   bufferPoolMap = new HashMap(); // Custom
+	   bufferPoolMap = new HashMap<Block, Buffer>(); // Custom
 	   numAvailable = numbuffs; // Custom 
 	   numAllocated = numbuffs;
       /*bufferpool = new Buffer[numbuffs];
@@ -67,11 +67,11 @@ class BasicBufferMgr {
             return null;
          if(buff.block()!= null){
         	 
-        	 bufferPoolMap.remove(buff.block().toString());
+        	 bufferPoolMap.remove(buff.block());
          }
          
          buff.assignToBlock(blk);
-         bufferPoolMap.put(buff.block().toString(), buff);
+         bufferPoolMap.put(buff.block(), buff);
          
       }
       if (!buff.isPinned())
@@ -97,11 +97,11 @@ class BasicBufferMgr {
          return null;
       if(buff.block()!= null){
      	 
-     	 bufferPoolMap.remove(buff.block().toString());
+     	 bufferPoolMap.remove(buff.block());
       }
       
       buff.assignToNew(filename, fmtr);
-      bufferPoolMap.put(buff.block().toString(), buff);
+      bufferPoolMap.put(buff.block(), buff);
       
       numAvailable--;
       buff.pin();
@@ -130,7 +130,7 @@ class BasicBufferMgr {
       //for (Buffer buff : bufferpool)
       try{
     	  
-         Buffer buff = bufferPoolMap.get(blk.toString());  // Custom
+         Buffer buff = bufferPoolMap.get(blk);  // Custom
          
             return buff;
       }
