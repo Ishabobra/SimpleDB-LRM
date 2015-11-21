@@ -78,6 +78,7 @@ public class SimpleDB {
    public static void initFileLogAndBufferMgr(String dirname) {
       initFileAndLogMgr(dirname);
       bm = new BufferMgr(BUFFER_SIZE);
+      System.out.println("Called Buffer mgr from simpleDb.java");
    }
    
    /**

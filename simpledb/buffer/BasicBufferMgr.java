@@ -16,6 +16,7 @@ class BasicBufferMgr {
    private Map<Block,Buffer> bufferPoolMap; // Custom
    private int numAllocated;
    
+   
    /**
     * Creates a buffer manager having the specified number 
     * of buffer slots.
@@ -31,6 +32,7 @@ class BasicBufferMgr {
     */
    BasicBufferMgr(int numbuffs) {
 	   bufferPoolMap = new HashMap<Block, Buffer>(); // Custom
+	   System.out.println("Called BasicBufferMgr constructor");
 	   numAvailable = numbuffs; // Custom 
 	   numAllocated = numbuffs;
       /*bufferpool = new Buffer[numbuffs];
@@ -38,7 +40,6 @@ class BasicBufferMgr {
       for (int i=0; i<numbuffs; i++)
          bufferpool[i] = new Buffer();*/
    }
-   
    /**
     * Flushes the dirty buffers modified by the specified transaction.
     * @param txnum the transaction's id number
@@ -77,6 +78,11 @@ class BasicBufferMgr {
       if (!buff.isPinned())
          numAvailable--;
       buff.pin();
+      for(Buffer buffer : bufferPoolMap.values())
+      {
+    	  System.out.println(buffer.block().toString());
+      }
+      System.out.println("------------");
       return buff;
    }
    
@@ -129,7 +135,7 @@ class BasicBufferMgr {
    private Buffer findExistingBuffer(Block blk){
       //for (Buffer buff : bufferpool)
       try{
-    	  
+    	 //System.out.println("In findExistingBuffer ");
          Buffer buff = bufferPoolMap.get(blk);  // Custom
          
             return buff;
@@ -166,11 +172,18 @@ class BasicBufferMgr {
 					  }
 				  }
 			  }
-			  
 			  return lsn_buff;
 	         //if (!buff.isPinned())
 	         //return buff;
 		  }
 	      //return null;
-	   }
+   }
+   
+   public boolean containsMapping(Block blk){
+	   return bufferPoolMap.containsKey(blk);
+   }
+   
+   public Buffer getMapping(Block blk){
+	   return bufferPoolMap.get(blk);
+   }
 }
