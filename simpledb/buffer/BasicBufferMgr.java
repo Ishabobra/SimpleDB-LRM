@@ -78,11 +78,11 @@ class BasicBufferMgr {
       if (!buff.isPinned())
          numAvailable--;
       buff.pin();
-      for(Buffer buffer : bufferPoolMap.values())
+      /*for(Buffer buffer : bufferPoolMap.values())
       {
     	  System.out.println(buffer.block().toString());
       }
-      System.out.println("------------");
+      System.out.println("------------");*/
       return buff;
    }
    
@@ -154,6 +154,7 @@ class BasicBufferMgr {
 		  {
 			  Buffer buff = new Buffer();
 			  numAllocated--;
+			  System.out.println("if block: " + buff.block().toString());
 			  return buff;
 		  }
 		  else
@@ -169,6 +170,7 @@ class BasicBufferMgr {
 					  {
 						  min = lsn;
 						  lsn_buff = buff;
+						  System.out.println("else block: " + lsn_buff.block().toString());
 					  }
 				  }
 			  }
