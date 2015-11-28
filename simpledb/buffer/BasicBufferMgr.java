@@ -69,15 +69,20 @@ class BasicBufferMgr {
          if(buff.block()!= null){
         	 
         	 bufferPoolMap.remove(buff.block());
+        	 System.out.println("removed: " + buff.block().toString());
          }
          
          buff.assignToBlock(blk);
          bufferPoolMap.put(buff.block(), buff);
-         
+         System.out.println("added: " + buff.block().toString());
       }
       if (!buff.isPinned())
+      {
          numAvailable--;
+      }
       buff.pin();
+      System.out.println("pinned: " + buff.block().toString());
+      //System.out.println("numavailable: " + numAvailable);
       /*for(Buffer buffer : bufferPoolMap.values())
       {
     	  System.out.println(buffer.block().toString());
@@ -99,6 +104,7 @@ class BasicBufferMgr {
     */
    synchronized Buffer pinNew(String filename, PageFormatter fmtr) {
       Buffer buff = chooseUnpinnedBuffer();
+      System.out.println("pinNew");
       if (buff == null)
          return null;
       if(buff.block()!= null){
@@ -120,6 +126,7 @@ class BasicBufferMgr {
     */
    synchronized void unpin(Buffer buff) {
       buff.unpin();
+      System.out.println("Unpinned buffer:" + buff.block().toString());
       if (!buff.isPinned())
          numAvailable++;
    }
@@ -154,7 +161,9 @@ class BasicBufferMgr {
 		  {
 			  Buffer buff = new Buffer();
 			  numAllocated--;
-			  System.out.println("if block: " + buff.block().toString());
+			  System.out.println("numallocated is greater than 0");
+			  System.out.println("returning unoccupied buffer");
+			  System.out.println("lsn of that buffer is: " + buff.getLogSequenceNumber());
 			  return buff;
 		  }
 		  else
@@ -166,14 +175,29 @@ class BasicBufferMgr {
 				  if(!buff.isPinned())
 				  {
 					  int lsn = buff.getLogSequenceNumber();
-					  if(min == -1 || lsn < min)
+					  System.out.println("lsn : " + lsn+" min "+ min);
+					  //if(min == -1 || (lsn < min && lsn != -1))
+					  if((lsn != -1 && min == -1) || (lsn != -1 && min != -1 && lsn < min))
 					  {
 						  min = lsn;
 						  lsn_buff = buff;
-						  System.out.println("else block: " + lsn_buff.block().toString());
 					  }
 				  }
 			  }
+			  if (min == -1){
+				  System.out.println("random block entered ");
+				  for(Buffer buff : bufferPoolMap.values())  // Custom
+				  {
+					  if(!buff.isPinned())
+					  {
+						  int lsn = buff.getLogSequenceNumber();
+						  System.out.println("lsn : " + lsn+" min "+ min);
+						  lsn_buff = buff;
+					  }
+				  	}
+			  }
+			  System.out.println("returning buffer occupied by: " + lsn_buff.block().toString());
+			  System.out.println("lsn of that buffer is: " + lsn_buff.getLogSequenceNumber());
 			  return lsn_buff;
 	         //if (!buff.isPinned())
 	         //return buff;
