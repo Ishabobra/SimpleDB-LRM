@@ -19,6 +19,10 @@ public class Buffer {
    private int pins = 0;
    private int modifiedBy = -1;  // negative means not modified
    private int logSequenceNumber = -1; // negative means no corresponding log record
+   private int pinCount;
+   private int unpinCount;
+   private int readCount;
+   private int writeCount;
 
 
 
@@ -93,6 +97,7 @@ public class Buffer {
       if (lsn >= 0)
 	      logSequenceNumber = lsn;
       contents.setInt(offset, val);
+      writeCount++;
    }
 
    /**
@@ -114,6 +119,7 @@ public class Buffer {
       if (lsn >= 0)
 	      logSequenceNumber = lsn;
       contents.setString(offset, val);
+      writeCount++;
    }
 
    /**
@@ -145,6 +151,7 @@ public class Buffer {
     */
    void pin() {
       pins++;
+      pinCount++;
    }
 
    /**
@@ -152,6 +159,7 @@ public class Buffer {
     */
    void unpin() {
       pins--;
+      unpinCount++;
    }
 
    /**
@@ -201,4 +209,37 @@ public class Buffer {
       blk = contents.append(filename);
       pins = 0;
    }
+
+public int getPinCount() {
+	return pinCount;
+}
+
+public void setPinCount(int pinCount) {
+	this.pinCount = pinCount;
+}
+
+public int getUnpinCount() {
+	return unpinCount;
+}
+
+public void setUnpinCount(int unpinCount) {
+	this.unpinCount = unpinCount;
+}
+
+public int getReadCount() {
+	return readCount;
+}
+
+public void setReadCount(int readCount) {
+	this.readCount = readCount;
+}
+
+public int getWriteCount() {
+	return writeCount;
+}
+
+public void setWriteCount(int writeCount) {
+	this.writeCount = writeCount;
+}
+   
 }

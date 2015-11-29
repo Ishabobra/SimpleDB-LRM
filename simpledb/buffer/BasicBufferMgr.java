@@ -212,4 +212,17 @@ class BasicBufferMgr {
    public Buffer getMapping(Block blk){
 	   return bufferPoolMap.get(blk);
    }
+   
+   public void getStatistics(){
+	   int i = 0;
+	   for(Block b:bufferPoolMap.keySet()){
+		   System.out.println("Buffer number "+ i);
+		   System.out.println("Pin Count: "+bufferPoolMap.get(b).getPinCount());
+		   System.out.println("Unpin Count: "+bufferPoolMap.get(b).getUnpinCount());
+		   System.out.println("Read Count: "+bufferPoolMap.get(b).getReadCount());
+		   System.out.println("Write Count: "+bufferPoolMap.get(b).getWriteCount());
+		   i++;
+	   }
+   }
+   
 }
