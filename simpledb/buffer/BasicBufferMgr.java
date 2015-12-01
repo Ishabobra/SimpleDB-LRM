@@ -88,6 +88,7 @@ class BasicBufferMgr {
     	  System.out.println(buffer.block().toString());
       }
       System.out.println("------------");*/
+      //getStatistics();
       return buff;
    }
    
@@ -127,6 +128,7 @@ class BasicBufferMgr {
    synchronized void unpin(Buffer buff) {
       buff.unpin();
       System.out.println("Unpinned buffer:" + buff.block().toString());
+      
       if (!buff.isPinned())
          numAvailable++;
    }

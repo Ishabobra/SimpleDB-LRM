@@ -40,7 +40,11 @@ public class Buffer {
     * {@link simpledb.server.SimpleDB#initFileAndLogMgr(String)} or
     * is called first.
     */
-   public Buffer() {}
+   public Buffer() {
+	   readCount = 0;
+	   writeCount = 0;
+	   
+   }
    
    /**
     * Returns the Log sequence number of the 
@@ -63,6 +67,9 @@ public class Buffer {
     * @return the integer value at that offset
     */
    public int getInt(int offset) {
+	   int rc = getReadCount();
+	   rc ++;
+	   setReadCount(rc);
       return contents.getInt(offset);
    }
 
@@ -75,6 +82,9 @@ public class Buffer {
     * @return the string value at that offset
     */
    public String getString(int offset) {
+	   int rc = getReadCount();
+	   rc ++;
+	   setReadCount(rc);
       return contents.getString(offset);
    }
 
@@ -97,7 +107,9 @@ public class Buffer {
       if (lsn >= 0)
 	      logSequenceNumber = lsn;
       contents.setInt(offset, val);
-      writeCount++;
+      int wc = getWriteCount();
+	   wc ++;
+	   setWriteCount(wc);
    }
 
    /**
@@ -119,7 +131,10 @@ public class Buffer {
       if (lsn >= 0)
 	      logSequenceNumber = lsn;
       contents.setString(offset, val);
-      writeCount++;
+      //writeCount++;
+      int wc = getWriteCount();
+	   wc ++;
+	   setWriteCount(wc);
    }
 
    /**
@@ -193,6 +208,8 @@ public class Buffer {
       blk = b;
       contents.read(blk);
       pins = 0;
+      readCount = 0;
+      writeCount = 0;
    }
 
    /**
@@ -208,6 +225,8 @@ public class Buffer {
       fmtr.format(contents);
       blk = contents.append(filename);
       pins = 0;
+      readCount = 0;
+      writeCount = 0;
    }
 
 public int getPinCount() {

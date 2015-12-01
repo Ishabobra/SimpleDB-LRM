@@ -25,7 +25,6 @@ import simpledb.index.planner.IndexUpdatePlanner;
 public class SimpleDB {
    public static int BUFFER_SIZE = 8;
    public static String LOG_FILE = "simpledb.log";
-   
    private static FileMgr     fm;
    private static BufferMgr   bm;
    private static LogMgr      logm;
