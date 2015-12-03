@@ -37,7 +37,6 @@ public class BufferMgr {
     */
    public BufferMgr(int numbuffers) {
       bufferMgr = new BasicBufferMgr(numbuffers);
-      System.out.println("Called BufferMgr constructor");
    }
    
    /**

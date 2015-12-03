@@ -43,6 +43,8 @@ public class Buffer {
    public Buffer() {
 	   readCount = 0;
 	   writeCount = 0;
+	   pinCount = 0;
+	   unpinCount = 0;
 	   
    }
    
@@ -66,11 +68,10 @@ public class Buffer {
     * @param offset the byte offset of the page
     * @return the integer value at that offset
     */
-   public int getInt(int offset) {
-	   int rc = getReadCount();
-	   rc ++;
-	   setReadCount(rc);
+   public int getInt(int offset){
+	  readCount++; // increment readCount on every read
       return contents.getInt(offset);
+	   
    }
 
    /**
@@ -82,9 +83,7 @@ public class Buffer {
     * @return the string value at that offset
     */
    public String getString(int offset) {
-	   int rc = getReadCount();
-	   rc ++;
-	   setReadCount(rc);
+	  readCount++; // increment readCount on every read to the buffer
       return contents.getString(offset);
    }
 
@@ -107,9 +106,7 @@ public class Buffer {
       if (lsn >= 0)
 	      logSequenceNumber = lsn;
       contents.setInt(offset, val);
-      int wc = getWriteCount();
-	   wc ++;
-	   setWriteCount(wc);
+      writeCount++; // increment writeCount on every write to the buffer
    }
 
    /**
@@ -131,10 +128,7 @@ public class Buffer {
       if (lsn >= 0)
 	      logSequenceNumber = lsn;
       contents.setString(offset, val);
-      //writeCount++;
-      int wc = getWriteCount();
-	   wc ++;
-	   setWriteCount(wc);
+      writeCount++; // increment writeCount on every write to the buffer
    }
 
    /**
@@ -166,7 +160,7 @@ public class Buffer {
     */
    void pin() {
       pins++;
-      pinCount++;
+      pinCount++; 
    }
 
    /**
@@ -208,8 +202,6 @@ public class Buffer {
       blk = b;
       contents.read(blk);
       pins = 0;
-      readCount = 0;
-      writeCount = 0;
    }
 
    /**
@@ -225,8 +217,6 @@ public class Buffer {
       fmtr.format(contents);
       blk = contents.append(filename);
       pins = 0;
-      readCount = 0;
-      writeCount = 0;
    }
 
 public int getPinCount() {
